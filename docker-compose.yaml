@@ -1,0 +1,10 @@
+services:
+  s2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: s2
+    image: s2:1.0.0
+    command: tail -f /dev/null
+    volumes:
+      - ./:/s2
