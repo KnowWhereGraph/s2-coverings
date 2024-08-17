@@ -1,33 +1,19 @@
 import os
+from functools import partial
 from pathlib import Path
 from typing import Generator
-from functools import partial
+
+from rdflib import Graph, URIRef
+from rdflib.query import ResultRow
+from s2geometry import (S2Cell, S2CellId, S2LatLng, S2Loop, S2Point, S2Polygon,
+                        S2Polyline, S2RegionCoverer)
+from shapely import (LinearRing, LineString, MultiLineString, MultiPolygon,
+                     Point, Polygon, buffer)
+from shapely.geometry.polygon import signed_area
+from shapely.wkt import loads
 
 from .config import config
 from .kwg_ont import KWGOnt, generate_cell_iri
-from rdflib import Graph, URIRef
-from rdflib.query import ResultRow
-from s2geometry import (
-    S2Cell,
-    S2CellId,
-    S2LatLng,
-    S2Loop,
-    S2Point,
-    S2Polygon,
-    S2Polyline,
-    S2RegionCoverer,
-)
-from shapely import (
-    LinearRing,
-    LineString,
-    MultiLineString,
-    MultiPolygon,
-    Point,
-    Polygon,
-    buffer,
-)
-from shapely.geometry.polygon import signed_area
-from shapely.wkt import loads
 
 
 class GeometricFeature:
@@ -43,7 +29,7 @@ class GeometricFeature:
         return self.geometry
 
     def yield_overlapping_ids(
-            self, geometry: Polygon | MultiPolygon, tolerance: float = config.tolerance
+        self, geometry: Polygon | MultiPolygon, tolerance: float = config.tolerance
     ) -> Generator[S2CellId, None, None]:
         """yields the cell IDs of those level 13 cells that overlap
         the given 2D geometry to a certain value of tolerance
@@ -62,14 +48,14 @@ class GeometricFeature:
             segmented_boundary = boundary.segmentize(tolerance)
             buff = buffer(segmented_boundary, tolerance / 100, 2)
             for cell_id in self.covering(
-                    buff, coverer=homogeneous_coverer, tolerance=tolerance
+                buff, coverer=homogeneous_coverer, tolerance=tolerance
             ):
                 yield cell_id
 
     def yield_crossing_ids(
-            self,
-            line_obj: LineString | MultiLineString,
-            tolerance: float = config.tolerance,
+        self,
+        line_obj: LineString | MultiLineString,
+        tolerance: float = config.tolerance,
     ) -> Generator[S2CellId, None, None]:
         """Yields those Cell IDs in a level 13 covering of a
         small (multi)polygon buffer around the given (multi)line string
@@ -92,7 +78,7 @@ class GeometricFeature:
             yield cell_id
 
     def yield_s2_relations(
-            self, coverer: S2RegionCoverer, tolerance: float = config.tolerance
+        self, coverer: S2RegionCoverer, tolerance: float = config.tolerance
     ) -> Generator[tuple[URIRef, URIRef, URIRef], None, None]:
         if isinstance(self.geometry, (Polygon, MultiPolygon)):
             predicate = KWGOnt.sfContains
@@ -124,7 +110,7 @@ class GeometricFeature:
             raise ValueError(msg)
 
     def s2_graph(
-            self, coverer: S2RegionCoverer, tolerance: float = config.tolerance
+        self, coverer: S2RegionCoverer, tolerance: float = config.tolerance
     ) -> Graph:
         graph = Graph()
         for triple in self.yield_s2_relations(coverer, tolerance):
@@ -132,10 +118,10 @@ class GeometricFeature:
         return graph
 
     def covering(
-            self,
-            geometry: Polygon | MultiPolygon,
-            coverer: S2RegionCoverer,
-            tolerance: float = config.tolerance,
+        self,
+        geometry: Polygon | MultiPolygon,
+        coverer: S2RegionCoverer,
+        tolerance: float = config.tolerance,
     ) -> list[S2CellId]:
         """Returns a list of s2 cell IDs appearing in a homogeneous
         covering of a 2-dimensional geometry by level 13 cells to a
@@ -152,8 +138,8 @@ class GeometricFeature:
         return covering
 
     def s2_from_coords(
-            self,
-            geometry: Point | LinearRing | LineString | Polygon | MultiPolygon,
+        self,
+        geometry: Point | LinearRing | LineString | Polygon | MultiPolygon,
     ) -> S2Point | S2Loop | S2Polyline | S2Polygon:
         """
         Returns a corresponding S2 object whose vertices
@@ -189,9 +175,9 @@ class GeometricFeature:
             return s2_polygon
 
     def s2_approximation(
-            self,
-            geometry: S2Point | LinearRing | LineString | Polygon | MultiPolygon,
-            tolerance: float = config.tolerance,
+        self,
+        geometry: S2Point | LinearRing | LineString | Polygon | MultiPolygon,
+        tolerance: float = config.tolerance,
     ) -> S2Point | S2Loop | S2Polyline | S2Polygon:
         """
         Returns a corresponding S2 object that approximates the given
@@ -209,7 +195,7 @@ class GeometricFeature:
         return self.s2_from_coords(geometry.segmentize(tolerance))
 
     def orient(
-            self, geometry: LinearRing | Polygon | MultiPolygon, sign: float = 1.0
+        self, geometry: LinearRing | Polygon | MultiPolygon, sign: float = 1.0
     ) -> LinearRing | Polygon | MultiPolygon:
         """
         Returns a copy of the geometry with the specified orientation
@@ -233,7 +219,7 @@ class GeometricFeature:
 
     @staticmethod
     def boundaries(
-            geometry: Polygon | MultiPolygon,
+        geometry: Polygon | MultiPolygon,
     ) -> Generator[LinearRing, None, None]:
         """
         Yields the boundary rings of a geometry with boundaries
@@ -253,10 +239,10 @@ class GeometricFeature:
                 yield interior
 
     def filling(
-            self,
-            polygon: Polygon | MultiPolygon,
-            coverer: S2RegionCoverer,
-            tolerance: float = 1e-2,
+        self,
+        polygon: Polygon | MultiPolygon,
+        coverer: S2RegionCoverer,
+        tolerance: float = 1e-2,
     ) -> list[S2CellId]:
         """
         Returns a list of cell IDs that constitute a filling
@@ -274,7 +260,7 @@ class GeometricFeature:
         filling = []
         s2_obj = self.s2_approximation(polygon, tolerance)
         for exponent in range(4, 9):
-            max_cells = 10 ** exponent
+            max_cells = 10**exponent
             coverer.set_max_cells(max_cells)
             filling = coverer.GetInteriorCovering(s2_obj)
             num_cells = len(filling)

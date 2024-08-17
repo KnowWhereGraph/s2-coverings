@@ -5,11 +5,12 @@ from functools import partial
 from multiprocessing import Pool
 from pathlib import Path
 
-from .config import config
-from .kwg_ont import namespace_prefix
-from .geometric_feature import GeometricFeature, yield_geometric_features
-from s2geometry import (S2CellId, S2RegionCoverer)
+from s2geometry import S2CellId, S2RegionCoverer
 from shapely.geometry import MultiPolygon, Polygon
+
+from .config import config
+from .geometric_feature import GeometricFeature, yield_geometric_features
+from .kwg_ont import namespace_prefix
 
 
 class Integrator:
@@ -19,7 +20,9 @@ class Integrator:
 
     def __init__(self, compressed: bool):
         if compressed:
-            print("Compression is on. Relations will be compressed using the S2 hierarchy...")
+            print(
+                "Compression is on. Relations will be compressed using the S2 hierarchy..."
+            )
         data_path = Path("./output/")
         output_folder = f"./output/{data_path.stem}"
 
@@ -41,9 +44,9 @@ class Integrator:
 
     @staticmethod
     def homogeneous_covering(
-            geometry: Polygon | MultiPolygon,
-            level: int,
-            tolerance: float = config.tolerance,
+        geometry: Polygon | MultiPolygon,
+        level: int,
+        tolerance: float = config.tolerance,
     ) -> list[S2CellId]:
         homogeneous_coverer = S2RegionCoverer()
         homogeneous_coverer.set_min_level(level)
@@ -54,10 +57,10 @@ class Integrator:
 
     @staticmethod
     def write_all_relations(
-            indexed_feature: tuple[int, GeometricFeature],
-            output_folder: str,
-            is_compressed: bool,
-            tolerance: float = config.tolerance,
+        indexed_feature: tuple[int, GeometricFeature],
+        output_folder: str,
+        is_compressed: bool,
+        tolerance: float = config.tolerance,
     ) -> None:
         idx, feature = indexed_feature
         coverer = S2RegionCoverer()

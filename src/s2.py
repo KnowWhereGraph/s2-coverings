@@ -8,20 +8,12 @@ from pathlib import Path
 
 from rdflib import RDF, RDFS, XSD, Graph, Literal
 from rdflib.namespace._GEO import GEO
-
-from s2geometry import (
-    S2Cell,
-    S2CellId,
-    S2LatLng,
-    S2Loop,
-    S2Point,
-    S2Polygon,
-    S2Polyline,
-    S2RegionCoverer,
-)
+from s2geometry import (S2Cell, S2CellId, S2LatLng, S2Loop, S2Point, S2Polygon,
+                        S2Polyline, S2RegionCoverer)
 from shapely.geometry import Polygon
-from lib.kwg_ont import KWGOnt, generate_cell_iri, namespace_prefix
+
 from lib.integrator import Integrator
+from lib.kwg_ont import KWGOnt, generate_cell_iri, namespace_prefix
 
 
 def write_to_rdf(cell_id_int: int, out_path: str, rdf_format: str) -> None:
@@ -42,16 +34,16 @@ def write_to_rdf(cell_id_int: int, out_path: str, rdf_format: str) -> None:
             print(pfx)
             graph.bind(pfx, namespace_prefix[pfx])
         file_extensions = {
-            'ttl': '.ttl',
-            'turtle': '.ttl',
-            'xml': '.xml',
-            'nq': '.nq',
-            'n3': 'n3',
-            'nt': '.nt',
-            'trix': '.trix',
-            'trig': '.trig',
-            'nquads': '.nq',
-            'json-ld': '.jsonld'
+            "ttl": ".ttl",
+            "turtle": ".ttl",
+            "xml": ".xml",
+            "nq": ".nq",
+            "n3": "n3",
+            "nt": ".nt",
+            "trix": ".trix",
+            "trig": ".trig",
+            "nquads": ".nq",
+            "json-ld": ".jsonld",
         }
         file_name = str(cell_id.id()) + file_extensions[rdf_format]
         destination = os.path.join(out_path, file_name)
@@ -150,18 +142,22 @@ if __name__ == "__main__":
         help="The format to write the RDF in. Options are xml, n3, turtle, nt, pretty-xml, trix, trig, nquads, "
         "json-ld, hext",
         type=str,
-        nargs='?',
-        default="ttl"
+        nargs="?",
+        default="ttl",
     )
     parser.add_argument(
-        "--ni", help="When used, s2 integration is disabled", nargs="?", const=1, type=int
+        "--ni",
+        help="When used, s2 integration is disabled",
+        nargs="?",
+        const=1,
+        type=int,
     )
     parser.add_argument(
         "--compressed",
         help="use the S2 hierarchy to write a compressed collection of relations at various levels",
         type=bool,
-        nargs='?',
-        default=True
+        nargs="?",
+        default=True,
     )
     args = parser.parse_args()
 
