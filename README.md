@@ -50,7 +50,9 @@ Due to the steps involved with installing the s2 libray bindings and different a
 
 ### Linting
 
-This repository adheres to the Black tool's default settings. It also makes use of isort for import sorting.  Run these before each pull request
+This repository adheres to the Black tool's default settings. It also makes use of isort for import sorting.  Run these before each pull request. 
+
+**Black and isort are competing for formatting the imports differently**. Run isort _after_ running black.
 
 ```commandline
 black .

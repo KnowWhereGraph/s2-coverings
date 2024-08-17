@@ -8,16 +8,8 @@ from pathlib import Path
 
 from rdflib import RDF, RDFS, XSD, Graph, Literal
 from rdflib.namespace._GEO import GEO
-from s2geometry import (
-    S2Cell,
-    S2CellId,
-    S2LatLng,
-    S2Loop,
-    S2Point,
-    S2Polygon,
-    S2Polyline,
-    S2RegionCoverer,
-)
+from s2geometry import (S2Cell, S2CellId, S2LatLng, S2Loop, S2Point, S2Polygon,
+                        S2Polyline, S2RegionCoverer)
 from shapely.geometry import Polygon
 
 from lib.integrator import Integrator
