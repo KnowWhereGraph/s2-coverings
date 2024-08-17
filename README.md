@@ -63,7 +63,7 @@ isort .
 
 Unit tests should be run before each pull request. To run them,
 
-`python -m pytest .`
+`pytest`
 
 ### Contributing
 
