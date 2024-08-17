@@ -5,10 +5,25 @@ from typing import Generator
 
 from rdflib import Graph, URIRef
 from rdflib.query import ResultRow
-from s2geometry import (S2Cell, S2CellId, S2LatLng, S2Loop, S2Point, S2Polygon,
-                        S2Polyline, S2RegionCoverer)
-from shapely import (LinearRing, LineString, MultiLineString, MultiPolygon,
-                     Point, Polygon, buffer)
+from s2geometry import (
+    S2Cell,
+    S2CellId,
+    S2LatLng,
+    S2Loop,
+    S2Point,
+    S2Polygon,
+    S2Polyline,
+    S2RegionCoverer,
+)
+from shapely import (
+    LinearRing,
+    LineString,
+    MultiLineString,
+    MultiPolygon,
+    Point,
+    Polygon,
+    buffer,
+)
 from shapely.geometry.polygon import signed_area
 from shapely.wkt import loads
 
