@@ -1,5 +1,6 @@
-from rdflib import URIRef
+from rdflib import RDF, RDFS, XSD, URIRef
 from rdflib.namespace import DefinedNamespace, Namespace
+from s2geometry import S2Cell, S2CellId
 
 
 class KWGOnt(DefinedNamespace):
@@ -33,3 +34,28 @@ class KWGOnt(DefinedNamespace):
     vertexPolygon: URIRef
 
     _NS = Namespace(f"{kwg_endpoint}lod/ontology/")
+
+
+def generate_cell_iri(cell_id: S2CellId) -> URIRef:
+    """
+    Creates an IRI for an individual cell, with a KnowWhereGraph domain
+
+    Args:
+        cell_id: The ID of the s2 cell
+    Returns:
+         A URI of the s2 cell
+    """
+    level = cell_id.level()
+    id_str = cell_id.id()
+    return KWGOnt.KWGR[f"{'s2.level'}{level}.{id_str}"]
+
+
+namespace_prefix = {
+    "kwgr": KWGOnt.KWGR,
+    "kwg-ont": KWGOnt._NS,
+    "geo": Namespace("http://www.opengis.net/ont/geosparql#"),
+    "sf": Namespace("http://www.opengis.net/ont/sf#"),
+    "rdf": RDF,
+    "rdfs": RDFS,
+    "xsd": XSD,
+}
