@@ -15,18 +15,18 @@ This breaks the reliance on the need for the graph database to support s2 indexi
 
 ### Docker
 
-Docker should be used to generate the s2 coverings, which can be done with
+Docker should be used to generate the s2 coverings, which can be done by running the following from the root folder.
 
 ```bash
-docker compose up -d
-docker exec -it s2 bash
-python3 src/s2.py --level <s2_level>
+git clone https://github.com/KnowWhereGraph/s2-coverings.git
+cd s2-coverings
+docker run -v ./:/s2 ghcr.io/knowwheregraph/s2-coverings:main python3 src/s2.py --level <level>
 ```
 
 Cell integration can be disabled by adding the `--ni` flag to the command,
 
 ```bash
-python3 src/s2.py --level <s2_level> --ni
+docker run -v ./:/s2 ghcr.io/knowwheregraph/s2-coverings:main python3 src/s2.py --level <level> --ni
 ```
 
 A complete list of options can be found by running
@@ -47,6 +47,18 @@ Results will be written to the `output/` folder. The results can then be loaded 
 Due to the steps involved with installing the s2 libray bindings and different approaches needed for each architecture - running outside of Docker isn't supported. If you're inspired, the Dockerfile has all necessary steps to install the requirements to run the tool.
 
 ## Development
+
+### Running Locally With Docker
+
+During development, you'll need a way to run the local codebase with your changes. To do this run the following, 
+
+```bash
+docker compose up -d
+docker exec -it s2 bash
+python3 src/s2.py --level <s2_level>
+```
+
+The source code in the container will stay up to date with the local filesystem, so there's no need to rebuild the image after each code change.
 
 ### Linting
 

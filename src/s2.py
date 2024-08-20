@@ -31,7 +31,6 @@ def write_to_rdf(cell_id_int: int, out_path: str, rdf_format: str) -> None:
     graph = graphify(cell_id)
     if graph:
         for pfx in namespace_prefix:
-            print(pfx)
             graph.bind(pfx, namespace_prefix[pfx])
         file_extensions = {
             "ttl": ".ttl",
@@ -176,7 +175,6 @@ if __name__ == "__main__":
         id_as_integer = (
             current_id.id()
         )  # note that current_id is an instance of S2CellId
-        print(id_as_integer)
         cell_id_integers.append(id_as_integer)
         current_id = current_id.next()
         if current_id == ending_id:
@@ -195,5 +193,4 @@ if __name__ == "__main__":
 
     # Handle integration
     if not args.ni:
-        print("ni not present")
         Integrator(args.compressed)
