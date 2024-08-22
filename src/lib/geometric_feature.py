@@ -270,7 +270,6 @@ class GeometricFeature:
 
 
 def yield_geometric_features(path: Path) -> Generator[GeometricFeature, None, None]:
-    print("====")
     if os.path.isfile(path):
         graph = Graph()
         with open(path, "r") as read_stream:
